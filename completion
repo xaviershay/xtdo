@@ -1,0 +1,10 @@
+autoload -U compinit
+compinit
+
+_t() {
+  if [[ -n $words[2] ]]; then
+    compadd `./t bumpc`
+  fi
+}
+
+compdef _t t

@@ -1,0 +1,1 @@
+ruby prototype.rb $*

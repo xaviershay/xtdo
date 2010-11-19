@@ -23,7 +23,7 @@ def parse_relative_time(str)
 end
 
 case ARGV[0]
-when 'add' then 
+when 'add', 'a' then 
   task = ARGV[1..-1]
   if task[0] =~ RELATIVE_REGEX
     scheduled_for = parse_relative_time(task.shift)
@@ -33,18 +33,20 @@ when 'add' then
     puts "Adding task: #{task.join(' ')}"
     tasks[task.join(' ')] = {} # TODO: if already exists?
   end
-when 'done' then tasks.delete_if {|name, _| name == ARGV[1..-1].join(" ")}
-when 'bump' then
+when 'done', 'd' then tasks.delete_if {|name, _| name == ARGV[1..-1].join(" ")}
+when 'bump', 'b' then
   task = ARGV[1..-1]
   scheduled_for = parse_relative_time(task.shift)
-  tasks[task.join(' ')][:scheduled] = scheduled_for
-when 'list' then
+  tasks[task.join(' ').tr('_', ' ')][:scheduled] = scheduled_for
+when 'bumpc' then # For completion
+  puts tasks.keys.map {|x| x.tr(' ', "_") }.sort
+when 'list', 'l' then
   today = Date.today
   today_tasks = tasks.select {|name, attrs| attrs[:scheduled] && attrs[:scheduled] <= today }
   puts "==== TODAY ====="
   puts today_tasks.keys.sort
 
-  if ARGV[1] == 'all'
+  if ARGV[1] == 'all' || ARGV[1] == 'a'
     puts
     puts "===== NEXT ====="
     next_tasks = tasks.select {|name, attrs| !attrs[:scheduled] }
