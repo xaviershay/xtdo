@@ -33,7 +33,11 @@ when 'add' then
     puts "Adding task: #{task.join(' ')}"
     tasks[task.join(' ')] = {} # TODO: if already exists?
   end
-when 'done' then puts "done task"
+when 'done' then tasks.delete_if {|name, _| name == ARGV[1..-1].join(" ")}
+when 'bump' then
+  task = ARGV[1..-1]
+  scheduled_for = parse_relative_time(task.shift)
+  tasks[task.join(' ')][:scheduled] = scheduled_for
 when 'list' then
   today = Date.today
   today_tasks = tasks.select {|name, attrs| attrs[:scheduled] && attrs[:scheduled] <= today }
