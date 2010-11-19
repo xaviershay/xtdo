@@ -33,7 +33,7 @@ when 'add', 'a' then
     puts "Adding task: #{task.join(' ')}"
     tasks[task.join(' ')] = {} # TODO: if already exists?
   end
-when 'done', 'd' then tasks.delete_if {|name, _| name == ARGV[1..-1].join(" ")}
+when 'done', 'd' then tasks.delete_if {|name, _| name == ARGV[1..-1].join(" ").tr("_", " ")}
 when 'bump', 'b' then
   task = ARGV[1..-1]
   scheduled_for = parse_relative_time(task.shift)
