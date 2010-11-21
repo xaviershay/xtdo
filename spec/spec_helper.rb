@@ -23,7 +23,7 @@ RSpec::Matchers.define(:have_task) do |task, opts = {}|
   match do |result|
     parsed = parse(result)
     tasks = opts[:in] ? parsed[opts[:in]] : parsed.values.flatten
-    tasks.include?(task)
+    tasks && tasks.include?(task)
   end
 
   failure_message_for_should do |result|
