@@ -9,7 +9,12 @@ class Xtdo
 #     tasks = {
 #       'T1' => {:scheduled => Date.today}
 #     }
-    tasks = YAML.load(File.open(store)) || {}
+    store = File.expand_path(store)
+    tasks = if File.exists?(store)
+      YAML.load(File.open(store))
+    else
+      {}
+    end
 
     manager = Xtdo.new(tasks)
 
@@ -81,9 +86,9 @@ class Xtdo
       :next      => lambda {|x| !x },
       :scheduled => lambda {|x| x && x > Date.today }
     }
-
     groups.map do |group|
       t = tasks.select {|name, opts| task_selector[group][opts[:scheduled]] }
+      next if t.empty?
       "===== #{group.to_s.upcase}\n" + t.map { |name, attrs|
         name
       }.join("\n")
