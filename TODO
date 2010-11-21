@@ -1,0 +1,5 @@
+- gemspec
+- Timecop for time_travel
+- move tasks into a namespace in the data store
+- store recurring tasks
+- calculate if a recurring task should be displayed

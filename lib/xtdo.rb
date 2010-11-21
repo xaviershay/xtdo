@@ -26,6 +26,8 @@ class Xtdo
       else
         manager.list [:today]
       end
+    when 'r' then # R is for recur!
+      manager.recur operation.join(' ')
     end
 
     manager.save(store)
@@ -86,6 +88,10 @@ class Xtdo
         name
       }.join("\n")
     end.join("\n")
+  end
+
+  def recur(task)
+    number, period, task = /^(?:(\d+)([dwmy])? )?(.*)/.match(task).captures
   end
   
   def save(file)
