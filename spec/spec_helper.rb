@@ -21,7 +21,9 @@ end
 
 RSpec::Matchers.define(:have_task) do |task, opts = {}|
   match do |result|
-    parse(result)[opts[:in]].should include(task)
+    parsed = parse(result)
+    tasks = opts[:in] ? parsed[opts[:in]] : parsed.values
+    tasks.include?(task)
   end
 
   failure_message_for_should do |result|
@@ -33,16 +35,27 @@ RSpec::Matchers.define(:have_task) do |task, opts = {}|
     buffer
   end
 
+  failure_message_for_should_not do |result|
+    buffer = "Expected not to find #{task} in #{opts[:in]}:\n"
+    parse(result).each do |group, tasks|
+      buffer += "  #{group}\n"
+      buffer += tasks.map {|x| "    #{x}" }.join("\n")
+    end
+    buffer
+  end
+
   def parse(data)
-    group = nil
-    data.lines.inject(Hash.new([])) do |a, line|
-      if line =~ /^=+ (.+)/
-        group = line[/^=+ (.+)/, 1].downcase.to_sym
-      else
-        a[group] ||= [] 
-        a[group] << line.chomp
+    @parsed ||= begin
+      group = nil
+      data.lines.inject({}) do |a, line|
+        if line =~ /^=+ (.+)/
+          group = line[/^=+ (.+)/, 1].downcase.to_sym
+        else
+          a[group] ||= [] 
+          a[group] << line.chomp
+        end
+        a
       end
-      a
     end
   end
 end

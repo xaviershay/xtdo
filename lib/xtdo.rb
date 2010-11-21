@@ -16,6 +16,8 @@ class Xtdo
     ret = case verb
     when 'a' then # A is for add!
       manager.add operation.join(' ')
+    when 'b' then # B is for bump!
+      manager.bump operation.join(' ')
     when 'l' then # L is for list!
       manager.list [:today, :next, :scheduled]
     end
@@ -44,6 +46,17 @@ class Xtdo
     number, period, task = /^(?:(\d+)([dwmy])? )?(.*)/.match(task).captures
     @tasks[task] = {}
     @tasks[task][:scheduled] = parse_relative_time(number.to_i, period) if number
+  end
+
+  def bump(task)
+    number, period, task = /^(?:(\d+)([dwmy])? )?(.*)/.match(task).captures
+    if !number
+      "Invalid time"
+    elsif tasks[task]
+      tasks[task][:scheduled] = parse_relative_time(number.to_i, period)
+    else
+      "No such task"
+    end
   end
 
   def list(groups)
