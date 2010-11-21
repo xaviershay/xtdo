@@ -32,6 +32,7 @@ RSpec::Matchers.define(:have_task) do |task, opts = {}|
     parse(result).each do |group, tasks|
       buffer += "  #{group}\n"
       buffer += tasks.map {|x| "    #{x}" }.join("\n")
+      buffer += "\n"
     end
     buffer
   end
@@ -42,6 +43,7 @@ RSpec::Matchers.define(:have_task) do |task, opts = {}|
     parse(result).each do |group, tasks|
       buffer += "  #{group}\n"
       buffer += tasks.map {|x| "    #{x}" }.join("\n")
+      buffer += "\n"
     end
     buffer
   end

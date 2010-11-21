@@ -21,7 +21,11 @@ class Xtdo
     when 'd' then # D is for done!
       manager.done operation.join(' ')
     when 'l' then # L is for list!
-      manager.list [:today, :next, :scheduled]
+      if operation[0]
+        manager.list [:today, :next, :scheduled]
+      else
+        manager.list [:today]
+      end
     end
 
     manager.save(store)
