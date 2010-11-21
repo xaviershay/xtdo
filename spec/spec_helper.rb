@@ -22,12 +22,13 @@ end
 RSpec::Matchers.define(:have_task) do |task, opts = {}|
   match do |result|
     parsed = parse(result)
-    tasks = opts[:in] ? parsed[opts[:in]] : parsed.values
+    tasks = opts[:in] ? parsed[opts[:in]] : parsed.values.flatten
     tasks.include?(task)
   end
 
   failure_message_for_should do |result|
-    buffer = "Expected to find #{task} in #{opts[:in]}. Instead found:\n"
+    in_string = " in #{opts[:in]}" if opts[:in]
+    buffer = "Expected to find #{task}#{in_string}. Instead found:\n"
     parse(result).each do |group, tasks|
       buffer += "  #{group}\n"
       buffer += tasks.map {|x| "    #{x}" }.join("\n")
@@ -36,7 +37,8 @@ RSpec::Matchers.define(:have_task) do |task, opts = {}|
   end
 
   failure_message_for_should_not do |result|
-    buffer = "Expected not to find #{task} in #{opts[:in]}:\n"
+    in_string = " in #{opts[:in]}" if opts[:in]
+    buffer = "Expected not to find #{task}#{in_string}:\n"
     parse(result).each do |group, tasks|
       buffer += "  #{group}\n"
       buffer += tasks.map {|x| "    #{x}" }.join("\n")

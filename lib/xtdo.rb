@@ -18,6 +18,8 @@ class Xtdo
       manager.add operation.join(' ')
     when 'b' then # B is for bump!
       manager.bump operation.join(' ')
+    when 'd' then # D is for done!
+      manager.done operation.join(' ')
     when 'l' then # L is for list!
       manager.list [:today, :next, :scheduled]
     end
@@ -54,6 +56,14 @@ class Xtdo
       "Invalid time"
     elsif tasks[task]
       tasks[task][:scheduled] = parse_relative_time(number.to_i, period)
+    else
+      "No such task"
+    end
+  end
+
+  def done(task)
+    if tasks.delete(task)
+      "Task done"
     else
       "No such task"
     end
