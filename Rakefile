@@ -5,6 +5,6 @@ task :default => :spec
 desc "Run specs"
 task :spec do
   commands = []
-  commands << "rspec spec/*_spec.rb"
+  commands << "bundle exec rspec spec/*_spec.rb"
   exec commands.join(" && ")
 end

@@ -1,0 +1,54 @@
+= xtdo
+
+An ultra fast command line todo list manager, with some strong opinions about workflow.
+
+== Usage
+
+Every command is mapped to a single character. If you want to be fast, you need to get the key strokes down.
+  
+  l = list
+  a = add (or all when used with list)
+  d = done
+  b = bump
+  r = recur
+
+Here is how it fits together:
+
+  gem install xtdo
+
+  alias t=xtdo # Recommended!
+
+  t a some task          # Add to list
+  t l a                  # All tasks
+  t b 0 some task        # Move task to TODAY
+  t a 0 another task     # New task on today list, shortcut letter
+  t l                    # Today's tasks
+  t d another task       # It is done!
+  t b 1w some task       # Actually we will to it next week
+  t r a 1d,thu bin night # Bin night every Thursday
+  t r a 1m,4 pay rent    # Pay rent on the 4th of the month
+  t r d pay rent         # Bah who wants to pay rent
+
+A big thing that is missing right now is a fast way to reference tasks (rather than type them out in full). This will probably be command-line completion.
+
+Currently tasks are stored in ~/.xtdo. This will be made configurable via an environment variable. I am going to be storing my tasks in Dropbox.
+
+== Why?
+
+I used to use a small subset of Things.app, and I really dug the workflow. I spend my life on the command-line though. Existing command line apps didn't quite match my workflow, or were too slow.
+
+Xtdo is fast in the sense that you type very little to make it do things, but also in that it is extremely quick to respond to commands - you will never notice any delay.
+
+== Compatibility
+
+Requires ruby 1.9.2. Will not run on any variant of 1.8.
+
+== Developing
+
+Refactors accepted, as long as they don't turn everything into a First Class Object. I see no reason why this code should require more than one file. I will likely not accept any features that I will not use personally.
+
+There are no runtime external dependencies. Let's keep it that way.
+
+== Status
+
+Almost, but not quite, useable. This file is the only documentation you'll get currently.
