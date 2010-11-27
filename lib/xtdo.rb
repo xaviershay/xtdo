@@ -134,6 +134,21 @@ class Xtdo
       if days.index(start)
         (days.index(start) - date.wday) % 7 + (number - 1) * 7
       end
+    when 'm' then
+      start = start.to_i
+      if start > 0
+        year = date.year
+        if start.to_i <= date.day
+          month = date.month + 1
+          if month > 12
+            month = 1
+            year += 1
+          end
+        else
+          month = date.month
+        end
+        Date.new(year, month, start.to_i) - date
+      end
     end
     if adjust
       if adjust == 0

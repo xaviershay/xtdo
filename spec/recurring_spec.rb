@@ -16,9 +16,13 @@ feature 'recurring' do
     it { Xtdo.calculate_starting_day(today, 1, 'w', 'tue').should == today + 1}
     it { Xtdo.calculate_starting_day(today, 1, 'w', 'sun').should == today + 6}
     it { Xtdo.calculate_starting_day(today, 1, 'w', '0').should == nil }
+    it { Xtdo.calculate_starting_day(today, 1, 'm', '1').should == Date.new(2010,12,1)}
+    it { Xtdo.calculate_starting_day(today, 1, 'm', '22').should == Date.new(2010,12,22)}
+    it { Xtdo.calculate_starting_day(today, 1, 'm', '23').should == Date.new(2010,11,23)}
+    it { Xtdo.calculate_starting_day(today, 1, 'm', '0').should == nil }
   end
 
-    let(:today) { Date.new(2010,11,17) } # Monday
+  let(:today) { Date.new(2010,11,17) } # Monday
   scenario 'daily' do
 
     time_travel today
@@ -67,18 +71,15 @@ feature 'recurring' do
   end
 
   scenario 'monthly' do
+    time_travel today
     t('r a 1m,3 T1')
 
-    time_travel Date.new(2010,11,3)
+    time_travel Date.new(2010,12,3)
     t('l').should have_task('T1')
     t('b 1 T1')
     t('l').should_not have_task('T1')
     t('d T1')
     t('l').should_not have_task('T1')
-
-    time_travel Date.new(2010,12,3)
-    t('l').should have_task('T1')
-    t('d T1')
 
     time_travel Date.new(2011,1,4)
     t('l').should have_task('T1')
