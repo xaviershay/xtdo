@@ -40,8 +40,10 @@ feature 'recurring' do
   end
 
   scenario 'remove' do
+    time_travel today
     t('r a 1d T1')
     t('r d T1')
+    time_travel today + 1
     t('l a').should_not have_task('T1')
   end
 
