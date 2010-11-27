@@ -13,7 +13,7 @@ class Xtdo
     tasks = if File.exists?(store)
       YAML.load(File.open(store))
     else
-      {}
+      {:tasks => {}, :recurring => {}}
     end
 
     manager = Xtdo.new(tasks)
@@ -39,10 +39,11 @@ class Xtdo
     ret
   end
 
-  attr_reader :tasks
+  attr_reader :tasks, :recurring
 
   def initialize(tasks)
-    @tasks = tasks
+    @tasks = tasks[:tasks]
+    @recurring = tasks[:recurring]
   end
 
   def parse_relative_time(number, period)
@@ -81,6 +82,17 @@ class Xtdo
   end
 
   def list(groups)
+    # Check for recurring
+    recurring.each do |name, task|
+      if task[:next] <= Date.today
+        tasks[name] = {:scheduled => Date.today }
+        number, period, start, _ = self.class.extract_recur_tokens(task[:period] + ' ' + name)
+
+        task[:next] = self.class.calculate_starting_day(Date.today, number, period, start)
+      end
+    end
+
+    # Print groups
     task_selector = {
       :today     => lambda {|x| x && x <= Date.today },
       :next      => lambda {|x| !x },
@@ -96,10 +108,54 @@ class Xtdo
   end
 
   def recur(task)
-    number, period, task = /^(?:(\d+)([dwmy])? )?(.*)/.match(task).captures
+    tokens = task.split(/\s+/)
+    verb = tokens.shift
+    task = tokens.join(' ')
+    case verb
+    when 'a' then
+      number, period, start, name = self.class.extract_recur_tokens(task)
+
+      period_string = "#{number}#{period}"
+      period_string += ",#{start}" if start
+      recurring[name] = {
+        :next   => Date.today + 1,
+        :period => period_string
+      }
+    end
   end
-  
+
+  def self.calculate_starting_day(date, number, period, start = nil)
+    days = %w(sun mon tue wed thu fri sat)
+    number = (number || 1).to_i
+
+    adjust = case period
+    when 'd' then 1
+    when 'w' then
+      if days.index(start)
+        (days.index(start) - date.wday) % 7 + (number - 1) * 7
+      end
+    end
+    if adjust
+      if adjust == 0
+        date + 7
+      else
+        date + adjust
+      end
+    end
+  end
+
+  def self.extract_recur_tokens(task)
+    /^(\d+)([dwmy])?(?:,(#{days.join('|')}|\d{1,2}))? (.*)/.match(task).captures
+  end
+  def self.days
+    days = %w(sun mon tue wed thu fri sat)
+  end
+
   def save(file)
-    File.open(file, 'w') {|f| f.write tasks.to_yaml } 
+    File.open(file, 'w') {|f| f.write({
+      :tasks     => tasks,
+      :recurring => recurring,
+      :version   => 1
+    }.to_yaml) } 
   end
 end

@@ -1,21 +1,27 @@
 require 'rspec'
 require 'tempfile'
 require 'date'
+require 'timecop'
 
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require 'xtdo'
 
 RSpec.configure do |config|
   config.before :each do
-    @file = Tempfile.new('xtdo')
+    @file = File.join(Dir.tmpdir, 'xtdo_test.yml')
   end
 
   config.after :each do
-    @file.unlink
+    File.unlink @file if File.exists? @file
+    Timecop.return
   end
 
   def t(operation)
-    Xtdo.run @file.path, operation
+    Xtdo.run @file, operation
+  end
+  
+  def time_travel(time)
+    Timecop.travel(time)
   end
 end
 
