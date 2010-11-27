@@ -121,6 +121,12 @@ class Xtdo
         :next   => Date.today + 1,
         :period => period_string
       }
+    when 'd' then
+      if recurring.delete task 
+        "Recurring task removed"
+      else
+        "No such recurring task"
+      end
     end
   end
 
