@@ -2,6 +2,8 @@ autoload -U compinit
 compinit
 
 _xtdo() {
+  # TODO: Complete a bare 'xtdo' with commands + description
+
   if [[ $words[2] == b ]]; then
     if (( CURRENT == 4 )); then
       compadd `bin/xtdo l c`
