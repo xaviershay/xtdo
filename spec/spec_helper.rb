@@ -25,6 +25,24 @@ RSpec.configure do |config|
   end
 end
 
+RSpec::Matchers.define(:have_completion_task) do |task|
+  match do |result|
+    parse(result).include? task
+  end
+
+  failure_message_for_should do |result|
+    buffer = "Expected to find #{task}. Instead found:\n"
+    parse(result).each do |found|
+      buffer += "  #{found}"  
+    end
+    buffer
+  end
+
+  def parse(data)
+    data.to_s.lines.map(&:chomp)
+  end
+end
+
 RSpec::Matchers.define(:have_task) do |task, opts = {}|
   match do |result|
     parsed = parse(result)

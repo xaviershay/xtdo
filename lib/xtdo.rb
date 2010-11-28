@@ -13,8 +13,10 @@ class Xtdo
     tasks = if File.exists?(store)
       YAML.load(File.open(store))
     else
-      {:tasks => {}, :recurring => {}}
+      {}
     end
+    tasks[:tasks] ||= {}
+    tasks[:recurring] ||= {}
 
     manager = Xtdo.new(tasks)
 
@@ -26,8 +28,11 @@ class Xtdo
     when 'd' then # D is for done!
       manager.done operation.join(' ')
     when 'l' then # L is for list!
-      if operation[0]
+      case operation[0]
+      when 'a' then
         manager.list [:today, :next, :scheduled]
+      when 'c' then
+        manager.list [:today, :next, :scheduled], :format => :completion
       else
         manager.list [:today]
       end
@@ -58,53 +63,58 @@ class Xtdo
 
   def add(task)
     number, period, task = /^(?:(\d+)([dwmy])? )?(.*)/.match(task).captures
-    @tasks[task] = {}
-    @tasks[task][:scheduled] = parse_relative_time(number.to_i, period) if number
+    @tasks[make_key task] = {:name => task}
+    @tasks[make_key task][:scheduled] = parse_relative_time(number.to_i, period) if number
   end
 
   def bump(task)
     number, period, task = /^(?:(\d+)([dwmy])? )?(.*)/.match(task).captures
     if !number
       "Invalid time"
-    elsif tasks[task]
-      tasks[task][:scheduled] = parse_relative_time(number.to_i, period)
+    elsif tasks[make_key task]
+      tasks[make_key task][:scheduled] = parse_relative_time(number.to_i, period)
     else
       "No such task"
     end
   end
 
   def done(task)
-    if tasks.delete(task)
+    if tasks.delete(make_key task)
       "Task done"
     else
       "No such task"
     end
   end
 
-  def list(groups)
+  def list(groups, opts = {})
     # Check for recurring
     recurring.each do |name, task|
       if task[:next] <= Date.today
-        tasks[name] = {:scheduled => Date.today }
+        tasks[make_key name] = {:scheduled => Date.today, :name => task[:name] }
         number, period, start, _ = self.class.extract_recur_tokens(task[:period] + ' ' + name)
 
         task[:next] = self.class.calculate_starting_day(Date.today, number, period, start)
       end
     end
 
-    # Print groups
-    task_selector = {
-      :today     => lambda {|x| x && x <= Date.today },
-      :next      => lambda {|x| !x },
-      :scheduled => lambda {|x| x && x > Date.today }
-    }
-    groups.map do |group|
-      t = tasks.select {|name, opts| task_selector[group][opts[:scheduled]] }
-      next if t.empty?
-      "===== #{group.to_s.upcase}\n" + t.map { |name, attrs|
-        name
-      }.join("\n")
-    end.join("\n")
+    if opts[:format] == :completion
+      tasks.keys.join "\n"
+    else
+      # Print groups
+      task_selector = {
+        :today     => lambda {|x| x && x <= Date.today },
+        :next      => lambda {|x| !x },
+        :scheduled => lambda {|x| x && x > Date.today }
+      }
+
+      groups.map do |group|
+        t = tasks.select {|name, opts| task_selector[group][opts[:scheduled]] }
+        next if t.empty?
+        "===== #{group.to_s.upcase}\n" + t.map { |name, attrs|
+          attrs[:name]
+        }.join("\n")
+      end.join("\n")
+    end
   end
 
   def recur(task)
@@ -117,17 +127,24 @@ class Xtdo
 
       period_string = "#{number}#{period}"
       period_string += ",#{start}" if start
-      recurring[name] = {
+      recurring[make_key name] = {
+        :name   => name,
         :next   => Date.today + 1,
         :period => period_string
       }
     when 'd' then
-      if recurring.delete task 
+      if recurring.delete make_key(task)
         "Recurring task removed"
       else
         "No such recurring task"
       end
+    when 'c' then
+      recurring.keys.join "\n"
     end
+  end
+
+  def make_key(name)
+    name.gsub /[^a-zA-Z0-9,.]/, '-' 
   end
 
   def self.calculate_starting_day(date, number, period, start = nil)

@@ -11,6 +11,7 @@ Every command is mapped to a single character. If you want to be fast, you need 
   d = done
   b = bump
   r = recur
+  c = completion (to help enable shell tab completion)
 
 Here is how it fits together:
 
@@ -28,6 +29,9 @@ Here is how it fits together:
   t r a 1d,thu bin night # Bin night every Thursday
   t r a 1m,4 pay rent    # Pay rent on the 4th of the month
   t r d pay rent         # Bah who wants to pay rent
+
+  t l c                  # List all tasks in a format suitable for tab completion
+  t r c                  # List all recurring tasks for completion
 
 A big thing that is missing right now is a fast way to reference tasks (rather than type them out in full). This will probably be command-line completion.
 
