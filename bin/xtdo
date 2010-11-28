@@ -3,6 +3,6 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 
 require 'xtdo'
-
-result = Xtdo.run "~/.xtdo", ARGV.join(" ")
+file = ENV['XTDO_PATH'] || "~/.xtdo"
+result = Xtdo.run file, ARGV.join(" ")
 puts result if result && result.is_a?(String) && result.length > 0
