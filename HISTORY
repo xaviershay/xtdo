@@ -1,2 +1,7 @@
+0.2.0 - 28 November 2010
+  * Added ZSH completion
+  * Added XTDO_PATH environment variable for customizing storage location
+  * Added recurring tasks to list all
+
 0.1.0 - 27 November 2010
   * Initial release
