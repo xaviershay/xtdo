@@ -75,7 +75,7 @@ RSpec::Matchers.define(:have_task) do |task, opts = {}|
   def parse(data)
     @parsed ||= begin
       group = nil
-      data.lines.inject({}) do |a, line|
+      data.to_s.lines.inject({}) do |a, line|
         if line =~ /^=+ (.+)/
           group = line[/^=+ (.+)/, 1].downcase.to_sym
         else

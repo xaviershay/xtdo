@@ -138,6 +138,10 @@ class Xtdo
       else
         "No such recurring task"
       end
+    when 'l' then
+      "===== RECURRING\n" + recurring.map do |name, task|
+        "%-6s%s" % [task[:period], task[:name]]
+      end.join("\n")
     when 'c' then
       recurring.keys.join "\n"
     end

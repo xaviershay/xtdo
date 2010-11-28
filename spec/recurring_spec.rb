@@ -23,6 +23,12 @@ feature 'recurring' do
   end
 
   let(:today) { Date.new(2010,11,17) } # Monday
+
+  scenario 'list' do
+    t('r a 1d T1')
+    t('r l').should have_task('1d    T1')
+  end
+
   scenario 'daily' do
 
     time_travel today
