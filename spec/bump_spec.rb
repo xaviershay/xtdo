@@ -7,7 +7,7 @@ feature 'bumping tasks' do
     t('b 0 T1')
     t('l').should have_task('T1', :in => :today)
     t('b 1 T1')
-    t('l all').should have_task('T1', :in => :scheduled, :for => Date.today + 1)
+    t('l a').should have_task('T1', :in => :scheduled, :for => Date.today + 1)
     t('b 1w T1')
     t('l a').should have_task('T1', :in => :scheduled, :for => Date.today + 7)
   end
