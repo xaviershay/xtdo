@@ -125,13 +125,17 @@ class Xtdo
     when 'a' then
       number, period, start, name = self.class.extract_recur_tokens(task)
 
-      period_string = "#{number}#{period}"
-      period_string += ",#{start}" if start
-      recurring[make_key name] = {
-        :name   => name,
-        :next   => Date.today + 1,
-        :period => period_string
-      }
+      if name
+        period_string = "#{number}#{period}"
+        period_string += ",#{start}" if start
+        recurring[make_key name] = {
+          :name   => name,
+          :next   => Date.today + 1,
+          :period => period_string
+        }
+      else
+        "Invalid command"
+      end
     when 'd' then
       if recurring.delete make_key(task)
         "Recurring task removed"
@@ -187,8 +191,14 @@ class Xtdo
   end
 
   def self.extract_recur_tokens(task)
-    /^(\d+)([dwmy])?(?:,(#{days.join('|')}|\d{1,2}))? (.*)/.match(task).captures
+    match = /^(\d+)([dwmy])?(?:,(#{days.join('|')}|\d{1,2}))? (.*)/.match(task)
+    if match
+      match.captures
+    else
+      []
+    end
   end
+
   def self.days
     days = %w(sun mon tue wed thu fri sat)
   end

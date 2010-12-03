@@ -90,4 +90,8 @@ feature 'recurring' do
     time_travel Date.new(2011,1,4)
     t('l').should have_task('T1')
   end
+
+  scenario 'error' do
+    t('r a').should == "Invalid command"
+  end
 end
