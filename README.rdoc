@@ -43,7 +43,7 @@ Load paths and gems and friends can add about 300ms to the load time of xtdo. Un
 
   #!/Users/xavier/.rvm/rubies/ruby-1.9.2-p0/bin/ruby
 
-  $LOAD_PATH.unshift "/Users/xavier/.rvm/gems/ruby-1.9.2-p0/gems/xtdo-0.2/lib"
+  $LOAD_PATH.unshift "/Users/xavier/.rvm/gems/ruby-1.9.2-p0/gems/xtdo-0.2.1/lib"
 
   require 'xtdo'
   file = ENV['XTDO_PATH'] || "~/.xtdo"
@@ -68,4 +68,4 @@ There are no runtime external dependencies. Let's keep it that way.
 
 == Status
 
-I am dog-fooding this and happy with it. AFAIK no one else is using it. This file is the only documentation you'll get currently.
+I am dog-fooding this and happy with it. AFAIK no one else is using it. I would like the proper install with speed hacks and shell completion to be easier. This file plus the comprehensive integration specs is the only documentation.
