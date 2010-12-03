@@ -110,10 +110,10 @@ class Xtdo
       groups.map do |group|
         t = tasks.select {|name, opts| task_selector[group][opts[:scheduled]] }
         next if t.empty?
-        "===== #{group.to_s.upcase}\n" + t.map { |name, attrs|
-          attrs[:name]
+        "\n\e[43;30m===== #{group.to_s.upcase} =====\e[0m\n\n" + t.map { |name, attrs|
+          "  #{attrs[:name]}"
         }.join("\n")
-      end.join("\n")
+      end.join("\n") + "\n\n"
     end
   end
 
@@ -139,9 +139,9 @@ class Xtdo
         "No such recurring task"
       end
     when 'l' then
-      "===== RECURRING\n" + recurring.map do |name, task|
-        "%-6s%s" % [task[:period], task[:name]]
-      end.join("\n")
+      "\n\e[43;30m===== RECURRING =====\e[0m\n\n" + recurring.map do |name, task|
+        "  %-8s%s" % [task[:period], task[:name]]
+      end.join("\n") + "\n\n"
     when 'c' then
       recurring.keys.join "\n"
     end

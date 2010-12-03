@@ -26,7 +26,7 @@ feature 'recurring' do
 
   scenario 'list' do
     t('r a 1d T1')
-    t('r l').should have_task('1d    T1')
+    t('r l').should have_task('1d      T1')
   end
 
   scenario 'daily' do
