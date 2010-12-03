@@ -37,6 +37,19 @@ There is a command line completion script for ZSH in bin/xtdo_completion.zsh tha
 
 By default tasks are stored in ~/.xtdo. Customize this by setting the XTDO_PATH environment variable. I store mine in Dropbox.
 
+== More speed!
+
+Load paths and gems and friends can add about 300ms to the load time of xtdo. Unacceptable! I haven't worked out a neat way around this yet, but for now my hack is to create my own script to run xtdo which I place in my path, with load paths hard coded in to it. This has the benefit of also working if you switch gemsets. Here is mine, yours will look slightly different:
+
+  #!/Users/xavier/.rvm/rubies/ruby-1.9.2-p0/bin/ruby
+
+  $LOAD_PATH.unshift "/Users/xavier/.rvm/gems/ruby-1.9.2-p0/gems/xtdo-0.2/lib"
+
+  require 'xtdo'
+  file = ENV['XTDO_PATH'] || "~/.xtdo"
+  result = Xtdo.run file, ARGV.join(" ")
+  puts result if result && result.is_a?(String) && result.length > 0
+
 == Why?
 
 I used to use a small subset of Things.app, and I really dug the workflow. I spend my life on the command-line though. Existing command line apps didn't quite match my workflow, or were too slow.
