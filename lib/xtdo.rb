@@ -62,9 +62,14 @@ class Xtdo
   end
 
   def add(task)
-    number, period, task = /^(?:(\d+)([dwmy])? )?(.*)/.match(task).captures
-    @tasks[make_key task] = {:name => task}
-    @tasks[make_key task][:scheduled] = parse_relative_time(number.to_i, period) if number
+    match = /^(?:(\d+)([dwmy])? )?(.+)/.match(task)
+    if match
+      number, period, task = match.captures
+      @tasks[make_key task] = {:name => task}
+      @tasks[make_key task][:scheduled] = parse_relative_time(number.to_i, period) if number
+    else
+      "Invalid command"
+    end
   end
 
   def bump(task)

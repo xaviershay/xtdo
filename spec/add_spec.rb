@@ -15,4 +15,8 @@ feature 'add' do
     t('a 1w T1')
     t('l a').should have_task('T1', :in => :scheduled, :for => Date.today + 7)
   end
+
+  scenario 'error' do
+    t('a').should == "Invalid command"
+  end
 end
