@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = 'xtdo'
-  s.version  = '0.2.1'
+  s.version  = '0.2.2'
   s.summary  = 'Minimal and fast command line todo manager'
   s.platform = Gem::Platform::RUBY
   s.authors  = ["Xavier Shay"]
