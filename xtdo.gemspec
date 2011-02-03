@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
 
   s.files    = Dir.glob("{spec,lib}/**/*.rb") + 
                Dir.glob("bin/*") +
-               %w(README.rdoc HISTORY LICENSE Rakefile TODO)
+               %w(README.rdoc HISTORY LICENSE Rakefile TODO xtdo.gemspec .gemtest Gemfile Gemfile.lock)
 
   s.bindir       = 'bin'
   s.require_path = 'lib'

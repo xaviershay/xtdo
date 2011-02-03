@@ -8,3 +8,5 @@ task :spec do
   commands << "bundle exec rspec spec/*_spec.rb"
   exec commands.join(" && ")
 end
+
+task :test => :spec
